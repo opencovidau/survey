@@ -1,79 +1,58 @@
-import React from "react"
-import { TailwindThemeProvider, FillButton } from "tailwind-react-ui"
-import { Wizard, Steps, Step } from "react-albus"
-import { useForm } from "react-hook-form"
+import React, { useState } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { Wizard } from "react-albus"
+import { TailwindThemeProvider } from "tailwind-react-ui"
+import { BrowserRouter, Route } from "react-router-dom"
 import theme from "./theme"
-import { Box } from "tailwind-react-ui"
+import SurveyApp from "./SurveyHome"
+import WelcomePage from "./WelcomePage"
+import {
+  decrement,
+  increment,
+  incrementByAmount,
+  incrementAsync,
+  selectLoading,
+} from "./surveySlice"
 
 const HomeApp = () => {
+  const count = useSelector(selectLoading)
+  const dispatch = useDispatch()
+  const [incrementAmount, setIncrementAmount] = useState("2")
+
+  const wizardStep = ({ step, push }) => {
+    switch (step.id) {
+      case "gandalf": {
+        push("ice-king")
+        break
+      }
+      default:
+        push()
+    }
+  }
+
   return (
     <TailwindThemeProvider theme={theme}>
-      <div className="w-full max-w-md bg-gray-800">
-        <Box p={4} text="white" bg="blue">
-          COVID-19 Survey Australia
-        </Box>
-        <Wizard>
-          <Steps>
-            <Step
-              id="merlin"
-              render={({ next }) => (
-                <div>
-                  <h1>Merlin</h1>
-                  <button onClick={next}>Next</button>
-                </div>
-              )}
-            />
-            <Step
-              id="gandalf"
-              render={({ next, previous }) => (
-                <div>
-                  <h1>Gandalf</h1>
-                  <button onClick={next}>Next</button>
-                  <button onClick={previous}>Previous</button>
-                </div>
-              )}
-            />
-            <Step
-              id="dumbledore"
-              render={({ previous }) => (
-                <div>
-                  <h1>Dumbledore</h1>
-                  <button onClick={previous}>Previous</button>
-                </div>
-              )}
-            />
-          </Steps>
-        </Wizard>
-        <form action="" className=" bg-white shadow-md px-8 py-8 pt-8">
-          <div className="px-4 pb-4">
-            <label htmlFor="email" className="text-sm block font-bold  pb-2">
-              EMAIL ADDRESS
-            </label>
-            <input
-              type="email"
-              name="email"
-              id=""
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-blue-300 "
-              placeholder="Johnbull@example.com"
-            />
+      <BrowserRouter>
+        <nav class="bg-gray-800">
+          <div class=" mx-auto px-2 sm:px-6 lg:px-8">
+            <div class="relative flex items-center justify-between h-16">
+              <span class="text-white text-bold">COVID-19 Survey</span>
+            </div>
           </div>
-          <div className="px-4 pb-4">
-            <label htmlFor="password" className="text-sm block font-bold pb-2">
-              PASSWORD
-            </label>
-            <input
-              type="password"
-              name="email"
-              id=""
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-blue-300"
-              placeholder="Enter your password"
+        </nav>
+        <Route path="/security" exact>
+          <WelcomePage />
+        </Route>
+        <Route
+          render={({ history }) => (
+            <Wizard
+              onNext={wizardStep}
+              history={history}
+              render={props => <SurveyApp {...props} />}
             />
-          </div>
-          <div>
-            <FillButton brand="primary">Submit</FillButton>
-          </div>
-        </form>
-      </div>
+          )}
+        />
+      </BrowserRouter>
     </TailwindThemeProvider>
   )
 }
