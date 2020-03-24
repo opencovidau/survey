@@ -74,7 +74,8 @@ const SurveyApp = ({ history, step, next, go }) => {
 
                         <button
                           class="mt-8 h-12 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                          onClick={next}
+                          onClick={next / 0}
+                          // onClick={iDontExt}
                         >
                           Start Survey
                         </button>
