@@ -1,0 +1,34 @@
+version: v1.0
+name: Docker
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: Build and Push Docker Images
+    task:
+      env_vars:
+        - name: AWS_DEFAULT_REGION
+          value: ap-southeast-2
+        - name: ECR_REGISTRY_WEBSITE
+          value: 765386407209.dkr.ecr.ap-southeast-2.amazonaws.com/infotorch/survey
+      secrets:
+        - name: AWS
+        - name: web-production
+      prologue:
+        commands:
+          - checkout
+          - aws ecr get-login --no-include-email | bash
+      jobs:
+        - name: docker build and push survey
+          commands:
+            - checkout
+            - "docker build -t website
+              --build-arg REACT_APP_SENTRY_DSN
+              --build-arg REACT_APP_API_ENDPOINT
+              --build-arg REACT_APP_ANALYTICS_ID
+              --build-arg BRANCH_NAME=${BRANCH_NAME}
+              --build-arg REVISION=${REVISION}
+              --build-arg REACT_APP_MAPBOX_API_KEY ."
+            - "docker tag website ${ECR_REGISTRY_WEBSITE}"
+            - "docker push ${ECR_REGISTRY_WEBSITE}"
