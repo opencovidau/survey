@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { TransitionGroup, CSSTransition } from "react-transition-group"
 import { Steps, Step, withWizard } from "react-albus"
@@ -15,6 +15,22 @@ import {
   doFormSubmit,
 } from "./surveySlice"
 
+const SubmitForm = ({ form }) => {
+  const [loaded, setLoaded] = useState(false)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(doFormSubmit(form))
+  }, [])
+
+  return (
+    <div class="flex flex-col block">
+      <span class="h-16 text-xl">Thank You</span>
+
+      <span>Thank you for submitting your details.</span>
+    </div>
+  )
+}
 const SurveyApp = ({ history, step, next, go }) => {
   const [dob, setStateDob] = useState()
   const [stateSymptomDate, setStateSymptomDate] = useState()
@@ -187,11 +203,7 @@ const SurveyApp = ({ history, step, next, go }) => {
                     </Step>
 
                     <Step id="f/done">
-                      <div class="flex flex-col block">
-                        <span class="h-16 text-xl">Thank You</span>
-
-                        <span>Thank you for submitting your details.</span>
-                      </div>
+                      <SubmitForm form={form} />
                     </Step>
                     <Step id="f/no">
                       <div class="flex flex-col block">

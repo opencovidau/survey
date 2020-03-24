@@ -45,6 +45,14 @@ const GetLocation = ({ next }) => {
   )
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log("5 second location search timeout")
+      setIsFinding(false)
+    }, 5000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
     if (!triedGeolocating) {
       getLocation()
     }

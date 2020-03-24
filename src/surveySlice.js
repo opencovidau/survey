@@ -10,12 +10,12 @@ export const slice = createSlice({
     currentStep: undefined,
     error: undefined,
     form: {
+      fingerprint: "dev",
       location: undefined,
       sex: undefined,
       dob: undefined,
       tested: undefined,
-      symptomDate: undefined,
-      fingerprint: undefined,
+      symptom_date: undefined,
     },
   },
   reducers: {
@@ -41,17 +41,17 @@ export const slice = createSlice({
       state.form.sex = payload
     },
     setDob: (state, { payload }) => {
-      state.form.dob = payload
+      state.form.dob = payload + "-01-01"
     },
     setTestedPosition: (state, { payload }) => {
       payload = !!payload
       state.form.tested = payload
     },
     setSymptomDate: (state, { payload }) => {
-      state.form.symptomDate = payload
+      state.form.symptom_date = payload
     },
     setLocation: (state, { payload }) => {
-      state.form.location = payload
+      state.form.location = `POINT(${payload.lat} ${payload.lng})`
     },
     setSubmitted: state => {
       state.submitted = true
@@ -84,7 +84,7 @@ export const doFormSubmit = (form, next) => dispatch => {
       console.log(r)
       next()
     })
-    .catch(e => dispatch(setError("Network error")))
+    .catch(e => console.error(e))
 }
 
 export const doSetDob = (dob, next) => dispatch => {
@@ -126,8 +126,7 @@ export const doSetSymptomDate = (symptomDate, form, next) => dispatch => {
 
   dispatch(clearError())
   dispatch(setSymptomDate(symptomDate))
-  dispatch(setFingerprint("zzzzz"))
-  dispatch(doFormSubmit(form, next))
+  next()
 }
 
 export const doSetLocation = (location, next) => dispatch => {
